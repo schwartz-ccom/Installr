@@ -62,6 +62,7 @@
             <Button fx:id="btnNOAALoad" minWidth="-Infinity" mnemonicParsing="false" prefWidth="185.0" text="NOAA Loadout" />
             <Button fx:id="btnClearLoad" minWidth="-Infinity" mnemonicParsing="false" prefWidth="185.0" text="Clear Loadout" />
             <CheckBox fx:id="isLaptop" mnemonicParsing="false" text="Apply Laptop Settings" />
+            <TextArea fx:id="txtUpdates" editable="false" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="185.0" promptText="Updates will appear here" />
          </children>
          <BorderPane.margin>
             <Insets />

@@ -1,8 +1,15 @@
 package main;
 
 import javafx.scene.control.*;
+import messaging.StatusMessenger;
+import messaging.StatusSubscriber;
 
-public class InstallerController {
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+public class InstallerController implements StatusSubscriber{
     
     public CheckBox chkbxArcGis;
     public CheckBox chkbxCaris;
@@ -28,19 +35,21 @@ public class InstallerController {
     
     public ProgressBar installProgress;
     public ProgressIndicator indicatorWorking;
-    
     public CheckBox isLaptop;
+    public TextArea txtUpdates;
     
     private boolean last = false;
+    private int currentlyDone = 0;
+    private long start;
     
-    private final boolean[] ccomLoad = { true, true, false, true, true, true, true, true, true, true, true, true, true, true };
-    private final boolean[] noaaLoad = { true, true, false, true, false, false, false, false, true, true, true, false, true, true };
-    private final boolean[] clearLoad = { false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+    private final boolean[] ccomLoad = {true, true, false, true, true, true, true, true, true, true, true, true, true, true};
+    private final boolean[] noaaLoad = {true, true, false, true, false, false, false, false, true, true, true, false, true, true};
+    private final boolean[] clearLoad = {false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     
     public void initialize() {
         
         // Easy array to cleanup the code down below.
-        all = new CheckBox[] {
+        all = new CheckBox[]{
                 chkbxArcGis,
                 chkbxCaris,
                 chkbxCisco,
@@ -68,33 +77,59 @@ public class InstallerController {
                 last = chkbxCisco.isSelected();
                 chkbxCisco.setSelected( true );
                 chkbxCV.setSelected( false );
-            }
-            else
+            } else
                 chkbxCisco.setSelected( last );
         } );
         
         chkbxCisco.setOnAction( e -> last = chkbxCisco.isSelected() );
         
         btnInstall.setOnAction( e -> {
-            if ( InstallHandler.install( installProgress, getSelectedApps() ) )
-                System.out.println( "Done " + chkbxCisco.getText() );
+            start = System.currentTimeMillis();
+            
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            
+            updateStatus( "Started install at " + dtf.format( now ) );
+            
+            indicatorWorking.setVisible( true );
+            
+            Stream< CheckBox > selected = Arrays.stream( all ).filter( CheckBox::isSelected );
+            
+            int checked = ( int ) Arrays.stream( all ).filter( CheckBox::isSelected ).count();
+            System.out.println( "There are " + checked + " checked." );
+            
+            selected.forEach( selectedItem -> {
+                String appName = selectedItem.getText();
+                
+                if ( InstallHandler.install( appName ) ) {
+                    currentlyDone += 1;
+                    updateStatusBar( currentlyDone, checked );
+                    updateStatus( "Finished " + appName );
+                }
+                
+            } );
+            
+            currentlyDone = 0;
+            indicatorWorking.setVisible( false );
+            
+            long minutes = ( System.currentTimeMillis() - start ) / 1000 / 60;
+            updateStatus( "Install took " + minutes + " minutes" );
         } );
     
-        
+        StatusMessenger.subscriber( this );
     }
     
-    private boolean[] getSelectedApps() {
-        boolean[] toInstall = new boolean[ 14 ];
-        int count = -1;
-        for ( CheckBox appBox: all ) {
-            toInstall[ ++count ] = appBox.isSelected();
-         }
-        
-        return toInstall;
+    private void updateStatusBar( double current, double total ) {
+        installProgress.setProgress( current / total );
     }
     
     private void setBoxes( boolean[] values ) {
         for ( int index = 0; index < all.length; index += 1 )
             all[ index ].setSelected( values[ index ] );
+    }
+    
+    @Override
+    public void updateStatus( String s ) {
+        txtUpdates.appendText( s + "\n" );
     }
 }

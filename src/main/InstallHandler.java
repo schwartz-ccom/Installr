@@ -1,20 +1,34 @@
 package main;
 
-import javafx.scene.control.ProgressBar;
+
+import messaging.StatusMessenger;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class InstallHandler {
     
-    private static String[] apps = { "ARC", "CARIS", "CV", "GLOBALMAPPER" };
+    public static boolean install( String app ) {
+        try {
+            Process p = Runtime.getRuntime().exec( "ping -4 google.com" );
     
-    public static boolean install( ProgressBar pb, boolean[] apps ) {
-        
-        // Get the total number of apps we need to install.
-        int totalNumberToInstall = 0;
-        for ( boolean b : apps ) {
-            if ( b )
-                totalNumberToInstall += 1;
+            BufferedReader in = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+            OutputStreamWriter out = new OutputStreamWriter( p.getOutputStream() );
+            String line;
+            while ( ( line  = in.readLine() ) != null ) {
+                System.out.println( "LINE: " + line );
+            }
+           
+            out.close();
+            in.close();
+            
+        } catch ( IOException ioe ){
+            StatusMessenger.sendStatusMessage( "IOE Error in install(). Report this to Chris." );
+            System.err.println( ioe.getMessage() );
+            return false;
         }
-        
         return true;
     }
 }
