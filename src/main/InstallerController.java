@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-public class InstallerController implements StatusSubscriber{
+public class InstallerController implements StatusSubscriber {
     
     public CheckBox chkbxArcGis;
     public CheckBox chkbxCaris;
@@ -25,6 +25,7 @@ public class InstallerController implements StatusSubscriber{
     public CheckBox chkbxSonarWiz;
     public CheckBox chkbxTTT;
     public CheckBox chkbxVMWare;
+    public CheckBox chkbxTest;
     
     private CheckBox[] all;
     
@@ -39,12 +40,11 @@ public class InstallerController implements StatusSubscriber{
     public TextArea txtUpdates;
     
     private boolean last = false;
-    private int currentlyDone = 0;
-    private long start;
     
-    private final boolean[] ccomLoad = {true, true, false, true, true, true, true, true, true, true, true, true, true, true};
-    private final boolean[] noaaLoad = {true, true, false, true, false, false, false, false, true, true, true, false, true, true};
-    private final boolean[] clearLoad = {false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+    
+    private final boolean[] ccomLoad = {true, true, false, true, true, true, true, true, true, true, true, true, true, true, false};
+    private final boolean[] noaaLoad = {true, true, false, true, false, false, false, false, true, true, true, false, true, true, false};
+    private final boolean[] clearLoad = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     
     public void initialize() {
         
@@ -63,7 +63,8 @@ public class InstallerController implements StatusSubscriber{
                 chkbxQPS,
                 chkbxSonarWiz,
                 chkbxTTT,
-                chkbxVMWare
+                chkbxVMWare,
+                chkbxTest
         };
         
         btnCCOMLoad.setOnAction( e -> setBoxes( ccomLoad ) );
@@ -84,43 +85,15 @@ public class InstallerController implements StatusSubscriber{
         chkbxCisco.setOnAction( e -> last = chkbxCisco.isSelected() );
         
         btnInstall.setOnAction( e -> {
-            start = System.currentTimeMillis();
-            
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            
-            updateStatus( "Started install at " + dtf.format( now ) );
-            
             indicatorWorking.setVisible( true );
-            
+            int count = ( int ) Arrays.stream( all ).filter( CheckBox::isSelected ).count();
             Stream< CheckBox > selected = Arrays.stream( all ).filter( CheckBox::isSelected );
             
-            int checked = ( int ) Arrays.stream( all ).filter( CheckBox::isSelected ).count();
-            System.out.println( "There are " + checked + " checked." );
+            InstallHandler.getInstance().install( selected, count, installProgress );
             
-            selected.forEach( selectedItem -> {
-                String appName = selectedItem.getText();
-                
-                if ( InstallHandler.install( appName ) ) {
-                    currentlyDone += 1;
-                    updateStatusBar( currentlyDone, checked );
-                    updateStatus( "Finished " + appName );
-                }
-                
-            } );
-            
-            currentlyDone = 0;
-            indicatorWorking.setVisible( false );
-            
-            long minutes = ( System.currentTimeMillis() - start ) / 1000 / 60;
-            updateStatus( "Install took " + minutes + " minutes" );
         } );
-    
+        
         StatusMessenger.subscriber( this );
-    }
-    
-    private void updateStatusBar( double current, double total ) {
-        installProgress.setProgress( current / total );
     }
     
     private void setBoxes( boolean[] values ) {
