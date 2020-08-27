@@ -34,6 +34,7 @@ public class Config {
         locations.put( "SonarWiz", defaultPath + "SonarWiz SI" );
         locations.put( "TeraTerm / Tortoise HG", defaultPath + "TTT SI" );
         locations.put( "VMWare Workstation Player", defaultPath + "VMWare SI" );
+        locations.put( "Firewall / Group Policy", "\\\\Seacow\\Storage\\Scripts\\PowerShell\\CCOM Installer\\Reference Scripts\\Update Firewall and Group Policy.ps1" );
         locations.put( "Test", "C:\\Users\\Schwar7z\\Documents\\Loose files lmao\\Test.ps1" );
     }
     

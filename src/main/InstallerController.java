@@ -4,8 +4,6 @@ import javafx.scene.control.*;
 import messaging.StatusMessenger;
 import messaging.StatusSubscriber;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -25,6 +23,7 @@ public class InstallerController implements StatusSubscriber {
     public CheckBox chkbxSonarWiz;
     public CheckBox chkbxTTT;
     public CheckBox chkbxVMWare;
+    public CheckBox chkbxFGP;
     public CheckBox chkbxTest;
     
     private CheckBox[] all;
@@ -42,9 +41,9 @@ public class InstallerController implements StatusSubscriber {
     private boolean last = false;
     
     
-    private final boolean[] ccomLoad = {true, true, false, true, true, true, true, true, true, true, true, true, true, true, false};
-    private final boolean[] noaaLoad = {true, true, false, true, false, false, false, false, true, true, true, false, true, true, false};
-    private final boolean[] clearLoad = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+    private final boolean[] ccomLoad = {true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, false};
+    private final boolean[] noaaLoad = {true, true, false, true, false, false, false, false, true, true, true, false, true, true, true, false};
+    private final boolean[] clearLoad = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false};
     
     public void initialize() {
         
@@ -64,6 +63,7 @@ public class InstallerController implements StatusSubscriber {
                 chkbxSonarWiz,
                 chkbxTTT,
                 chkbxVMWare,
+                chkbxFGP,
                 chkbxTest
         };
         

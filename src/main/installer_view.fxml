@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="450.0" minWidth="400.0" prefHeight="0.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.InstallerController">
+<BorderPane minHeight="475.0" minWidth="400.0" prefHeight="0.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.InstallerController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -49,6 +49,7 @@
             <CheckBox fx:id="chkbxSonarWiz" mnemonicParsing="false" selected="true" text="SonarWiz" />
             <CheckBox fx:id="chkbxTTT" mnemonicParsing="false" selected="true" text="TeraTerm / Tortoise Hg" />
             <CheckBox fx:id="chkbxVMWare" mnemonicParsing="false" selected="true" text="VMWare Workstation Player" />
+            <CheckBox fx:id="chkbxFGP" contentDisplay="RIGHT" mnemonicParsing="false" selected="true" text="Firewall / Group Policy" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
