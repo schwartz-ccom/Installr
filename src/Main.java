@@ -1,5 +1,3 @@
-package main;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,10 +8,10 @@ public class Main extends Application {
     
     @Override
     public void start( Stage primaryStage ) throws Exception {
-        Parent root = FXMLLoader.load( getClass().getResource( "installer_view.fxml" ) );
+        Parent root = FXMLLoader.load( getClass().getResource( "display/installer_view.fxml" ) );
         primaryStage.setTitle( "CCOM Installer" );
         
-        Scene primaryScene = new Scene( root, 400, 450 );
+        Scene primaryScene = new Scene( root, 400, 500 );
         
         primaryStage.setResizable( false );
         primaryStage.setScene( primaryScene );

@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="475.0" minWidth="400.0" prefHeight="0.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.InstallerController">
+<BorderPane minHeight="500.0" minWidth="400.0" prefHeight="0.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/14.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="display.InstallerController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>

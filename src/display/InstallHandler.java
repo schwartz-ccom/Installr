@@ -1,4 +1,4 @@
-package main;
+package display;
 
 
 import data.Config;
@@ -35,35 +35,46 @@ public class InstallHandler {
     
         StatusMessenger.sendStatusMessage( "Started install at " + dtf.format( now ) );
     
-        System.out.println( "There are " + count + " checked." );
+        String mes = "are";
+        if ( count == 1 )
+            mes = "is";
+        System.out.println( "There " + mes + " " + count + " checked." );
         
         Task< Boolean > t = new Task<> () {
             @Override
             protected Boolean call() {
                 apps.forEach( selectedItem -> {
                     String appName = selectedItem.getText();
-    
+                    System.out.println( "Attempting to install " + appName );
+                    System.out.println( "Location of installer: " + Config.getInstance().getInstallerFile( appName ) );
                     try {
-                        Process p = Runtime.getRuntime().exec( "powershell -File \"" + Config.getInstance().geInstallerFile( appName ) + "\"" );
+                        Process p = Runtime.getRuntime().exec( "powershell -File \"" + Config.getInstance().getInstallerFile( appName ) + "\"" );
         
                         BufferedReader in = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
                         OutputStreamWriter out = new OutputStreamWriter( p.getOutputStream() );
-                        String line;
-                        while ( (line = in.readLine() ) != null ) {
+                        BufferedReader err = new BufferedReader( new InputStreamReader( p.getErrorStream() ) );
+                        
+                        String line, error = null;
+                        while ( ( line = in.readLine() ) != null || ( error = err.readLine() ) != null ) {
                             System.out.println( "LINE: " + line );
+                            if ( error != null && !error.isEmpty() ) {
+                                if ( error.contains( "does not exist" ) )
+                                    StatusMessenger.sendStatusMessage( "- Error: Check the file location" );
+                                System.err.println( "ERROR: " + error );
+                            }
                         }
         
                         out.close();
                         in.close();
                         
                         p.waitFor();
-        
+                        System.out.println( "The process is done. Moving on to the next install." );
                     } catch ( IOException | InterruptedException ioe ) {
                         StatusMessenger.sendStatusMessage( "IOE Error in install(). Report this to Chris." );
                         System.err.println( ioe.getMessage() );
                     }
                     
-                    StatusMessenger.sendStatusMessage( "Finished " + appName);
+                    StatusMessenger.sendStatusMessage( "- Finished " + appName);
     
                     currentlyDone += 1;
                     
@@ -79,7 +90,7 @@ public class InstallHandler {
     
             currentlyDone = 0;
             long minutes = ( System.currentTimeMillis() - start ) / 1000 / 60;
-            StatusMessenger.sendStatusMessage( "Install took " + minutes + " minutes" );
+            StatusMessenger.sendStatusMessage( "Done! Install took " + minutes + " minutes" );
         } );
         t.setOnFailed( e -> StatusMessenger.sendStatusMessage( "There was an error that caused a complete failure: " + e.getSource().getMessage() ) );
         

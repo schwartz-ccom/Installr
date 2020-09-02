@@ -1,4 +1,4 @@
-package main;
+package display;
 
 import javafx.scene.control.*;
 import messaging.StatusMessenger;
@@ -43,7 +43,7 @@ public class InstallerController implements StatusSubscriber {
     
     private final boolean[] ccomLoad = {true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, false};
     private final boolean[] noaaLoad = {true, true, false, true, false, false, false, false, true, true, true, false, true, true, true, false};
-    private final boolean[] clearLoad = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false};
+    private final boolean[] clearLoad = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     
     public void initialize() {
         
@@ -103,6 +103,8 @@ public class InstallerController implements StatusSubscriber {
     
     @Override
     public void updateStatus( String s ) {
+        if ( s.startsWith( "Done!" ) )
+            indicatorWorking.setVisible( false );
         txtUpdates.appendText( s + "\n" );
     }
 }
